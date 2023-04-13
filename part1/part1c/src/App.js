@@ -1,19 +1,57 @@
 import { useState } from "react";
 
+const Display = ({counter}) => <div>{counter}</div>
+
+const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
+
 const App = (props) => {
   // const {counter} = props
 
   const [counter, setCounter] = useState(0)
+  console.log('rendering with counter value', counter)
   
-  setTimeout(
-    () => setCounter(counter + 1),
-    1000
-  )
+  // setTimeout(
+  //   () => setCounter(counter + 1),
+  //   1000
+  // )
 
-  console.log('rendering...', counter)
+  // console.log('rendering...', counter)
+
+  // const handleClick = () => {
+  //   console.log('clicked');
+  // }
+
+  const increaseByOne = () => {
+    console.log('increasing, value before: ', counter)
+    setCounter(counter + 1)
+  }
+  const decreaseByOne = () => {
+    console.log('decreasing, value before: ', counter)
+    setCounter(counter - 1)
+  }
+  const setToZero = () => {
+    console.log('resetting to zero, value before: ', counter)
+    setCounter(0)
+  }
 
   return (
-    <div>{counter}</div>
+    <div>
+      <Display counter={counter} />
+      <Button handleClick={increaseByOne} text='plus'/>
+      <Button handleClick={setToZero} text='zero'/>
+      <Button handleClick={decreaseByOne} text='minus'/>
+    </div>
+
+    /* <div>
+      <div>{counter}</div>
+      <button onClick={increaseByOne}>plus</button>
+      <button onClick={setToZero}>zero</button>
+
+      // { <button onClick={handleClick}>plus</button> }
+      // { <button onClick={() => console.log('clicked')}>plus</button> }
+      // { <button onClick={() => setCounter(counter + 1)}>plus</button> }
+      // { <button onClick={() => setCounter(0)}>zero</button> }
+    </div> */
   )
 
   // PART1C - COMPONENT HELPER FUNCTIONS AND DESCTRUCTURING //
@@ -30,7 +68,7 @@ const App = (props) => {
 }
 
 // PART1C - DESTRUCTURING //
-/* const Hello = ({name, age}) => { // props in parameters changed to {name, age}
+/* const Hello = ({name, age}) => { // props in parameters changed to {name, age}, so function can pass needed objects as props without having to initialize variable
   const bornYear = () => new Date().getFullYear() - age
 
   // DESCTRUCTURING // 
