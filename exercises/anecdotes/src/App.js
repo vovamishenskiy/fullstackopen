@@ -13,24 +13,39 @@ const App = () => {
    ]
 
    const [selected, setSelected] = useState(0)
+   const [votes, setVote] = useState(new Array(anecdotes.length).fill(0))
 
-   const handleSelectedAnecdote = () => {
-    console.log('outputting new anecdote, previous:', selected)
-    setSelected(Math.floor(Math.random()*8))
+   const handleRandomAnecdote = () => {
+    const randomAnecdote = Math.floor(Math.random() * Math.floor(anecdotes.length))
+    setSelected(randomAnecdote)
    }
 
-   const points = new Array(8).fill(0)
-   console.log(points)
+   const handleVoteClick = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVote(copy)
+   }
 
-   // TODO: get votes, save in array 'points' defined earlier and return them under anecdote 
+   const getHighestVote = Math.max(...votes)
+   const maxVotesAnecdote = anecdotes[votes.indexOf(getHighestVote)]
 
    return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <button id="voteBtn">vote</button>
-      <button onClick={handleSelectedAnecdote}>next anecdote</button>
+      <H1 text='Anecdote of the day'/>
+      <Anecdote anecdote={anecdotes[selected]}/>
+      <Votes votes={votes[selected]} />
+      <Button onClick={handleVoteClick} text='vote'/>
+      <Button onClick={handleRandomAnecdote} text='next anecdote'/>
+      <H1 text='Anecdote with most votes'/>
+      <Anecdote anecdote={maxVotesAnecdote}/>
+      <Votes votes={getHighestVote}/>
     </div>
    )
 }
+
+const H1 = ({text}) => <h1>{text}</h1>
+const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
+const Anecdote = ({anecdote}) => <p>{anecdote}</p>
+const Votes = ({votes}) => <p>has {votes} votes</p>
 
 export default App;
