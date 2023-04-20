@@ -3,36 +3,53 @@ import Person from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { content: 'Arto Hellas', id: 1 }
+    { name: 'Arto Hellas', numberVal: '040-1234567' , id: 1 }
   ])
+  const [numbers, setNumbers] = useState([])
 
   const [newName, setNewName] = useState('')
+  const [copyName, setCopyName] = useState('')
 
-  const addName = (event) => {
+  const [newNumber, setNewNumber] = useState('')
+  const [copyNumber, setCopyNumber] = useState('')
+
+  const addPerson = (event) => {
     event.preventDefault();
     const nameObject = {
-      content: newName,
+      name: newName,
       id: newName,
+    }
+    const numberObject = {
+      numberVal: newNumber,
+      id: newNumber,
+    }
+
+    setCopyName(copyName.concat(newName))
+    setCopyNumber(copyNumber.concat(newNumber))
+
+    if(JSON.stringify(copyName) === JSON.stringify(newName) || JSON.stringify(copyNumber) === JSON.stringify(newNumber)) {
+      return alert(`${newName} or ${newNumber} is already added`)
     }
 
     setPersons(persons.concat(nameObject))
     setNewName('')
+
+    setNumbers(numbers.concat(numberObject))
+    setNewNumber('')
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
-
-  // console.log(JSON.stringify(persons.content) === JSON.stringify(newName.content))
-  console.log(newName in persons)
-
-  // const existingPerson = persons.filter(person => person.newName === persons.newName)
-  // if(!existingPerson) console.log('error')
+  const handleNumberChange = (event) => setNewNumber(event.target.value)
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}>
+      <form onSubmit={addPerson}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNumberChange} />
         </div>
         <div>
           <button type='submit'>add</button>
@@ -40,8 +57,8 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map(person =>
-          <Person key={person.id} person={person} />)}
+        {persons.map((person, number) =>
+          <Person key={person.id} person={person} number={number}/>)}
       </ul>
     </div>
   )
