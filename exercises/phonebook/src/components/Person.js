@@ -1,5 +1,5 @@
-const Person = ({ person, number }) => {
-    return <li>{person.name} {number.numberVal}</li>
+const Person = ({ person }) => {
+    return <li>{person.name} {person.numberVal}</li>
 }
 
 export default Person
