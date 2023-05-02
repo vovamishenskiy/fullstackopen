@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import axios from 'axios'
+import personService from './services/persons'
 import Header from './components/Header'
 import PersonForm from './components/PersonForm'
 import PersonList from "./components/PersonList"
@@ -10,11 +10,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-        console.log(response.data)
+    personService
+      .getAll()
+      .then(initialPerson => {
+        setPersons(initialPerson)
       })
   }, [])
 
@@ -28,9 +27,13 @@ const App = () => {
 
     if (persons.some(a => a.name === newName || a.numberVal === newNumber)) return alert(`person with name ${newName} or number ${newNumber} is already added`)
 
-    setPersons(persons.concat(nameObject))
-    setNewName('')
-    setNewNumber('')
+    personService
+      .create(nameObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
