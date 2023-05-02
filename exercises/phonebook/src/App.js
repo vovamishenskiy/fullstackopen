@@ -1,34 +1,32 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from 'axios'
 import Header from './components/Header'
 import PersonForm from './components/PersonForm'
 import PersonList from "./components/PersonList"
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', numberVal: '040-1234567', id: 1 }
-  ])
-
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
-  const [copyName, setCopyName] = useState('')
-
   const [newNumber, setNewNumber] = useState('')
-  const [copyNumber, setCopyNumber] = useState('')
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+        console.log(response.data)
+      })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault();
     const nameObject = {
       name: newName,
-      numberVal: newNumber,
+      number: newNumber,
       id: newName,
     }
 
-    setCopyName(copyName.concat(newName))
-    setCopyNumber(copyNumber.concat(newNumber))
-
-    if (JSON.stringify(copyName) === JSON.stringify(newName)
-      || JSON.stringify(copyNumber) === JSON.stringify(newNumber)) {
-      return alert(`${newName} or ${newNumber} is already added`)
-    }
+    if (persons.some(a => a.name === newName || a.numberVal === newNumber)) return alert(`person with name ${newName} or number ${newNumber} is already added`)
 
     setPersons(persons.concat(nameObject))
     setNewName('')
