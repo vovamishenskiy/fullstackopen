@@ -25,16 +25,43 @@ const App = () => {
       id: newName,
     }
 
-    if (persons.some(a => a.name === newName || a.numberVal === newNumber)) return alert(`person with name ${newName} or number ${newNumber} is already added`)
+    const existingPerson = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
 
-    personService
-      .create(nameObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+    if (existingPerson && existingPerson.number !== newNumber){
+      if(window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)){
+        const changedPerson = {...existingPerson, number: newNumber}
+        const id = existingPerson.id
+
+        personService
+          .update(id, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+    }
+
+      personService
+        .create(nameObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
   }
+
+  const deletePerson = (id) => {
+    if (window.confirm(`Delete ${id}?`)) {
+      personService
+        .deletePerson(id)
+        .then(setPersons(persons.filter((person) => person.id !== id)))
+    }
+  }
+
+  // const updatePerson = (id, newObject) => {
+
+  // }
 
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
@@ -44,7 +71,7 @@ const App = () => {
       <Header text='Phonebook' />
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <Header text='Numbers' />
-      <PersonList persons={persons} />
+      <PersonList persons={persons} deletePerson={deletePerson} />
     </div>
   )
 }
