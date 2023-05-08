@@ -4,10 +4,12 @@ import Note from './components/Note'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [errorMessage, setErrorMessage] = useState(null)
+
+
 
   useEffect(() => {
     noteService
@@ -16,6 +18,8 @@ const App = () => {
         setNotes(initialNotes)
       })
   }, [])
+
+  if (!notes) return null
 
   const addNote = (event) => {
     event.preventDefault();
@@ -43,13 +47,12 @@ const App = () => {
     const changedNote = { ...note, important: !note.important }
 
     noteService
-      .update(id, changedNote)
-      .then(returnedNote => {
+      .update(id, changedNote).then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error => {
         setErrorMessage(
-          `Note ${note.content} was already removed from server`
+          `Note '${note.content}' was already removed from server`
         )
         setTimeout(() => {
           setErrorMessage(null)
